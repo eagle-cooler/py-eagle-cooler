@@ -1,5 +1,5 @@
 
-from eagle_cooler import EagleWebApi
+from eagle_cooler.webapi import EagleWebApi
 
 from eagle_cooler.model import FolderModel, ItemModel
 from .core import EagleCoolerCore
