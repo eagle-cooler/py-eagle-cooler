@@ -79,11 +79,15 @@ When running in a Power Eagle context, access to enhanced features:
 
 ```python
 # In a Power Eagle Python script
-from eagle_cooler import EagleCoolerCore, EagleCallback
+from eagle_cooler import eagleContext, EagleCallback
 
-# Get selected items from Power Eagle context
-selected_items = EagleCoolerCore.selected_item_ids()
-selected_folders = EagleCoolerCore.selected_folder_ids()
+# Get selected items and folders from Power Eagle context
+selected_items = eagleContext.get_selected_items()
+selected_folders = eagleContext.get_selected_folders()
+
+# Get just the IDs if needed
+selected_item_ids = eagleContext.get_selected_item_ids()
+selected_folder_ids = eagleContext.get_selected_folder_ids()
 
 # Use callback system for advanced plugin operations
 # (extensive callback API available for plugin development)
@@ -120,10 +124,11 @@ selected_folders = EagleCoolerCore.selected_folder_ids()
 - `EagleWebApi.item.refresh_thumbnail(item_id)` - Refresh thumbnail
 - `EagleWebApi.item.refresh_palette(item_id)` - Refresh color palette
 
-### 🔧 Core Utilities (Power Eagle Mode)
-- `EagleCoolerCore.token()` - Get current API token
-- `EagleCoolerCore.selected_item_ids()` - Get selected item IDs from Power Eagle context
-- `EagleCoolerCore.selected_folder_ids()` - Get selected folder IDs from Power Eagle context
+### 🔧 Context (Power Eagle Mode)
+- `eagleContext.get_selected_item_ids()` - Get selected item IDs from Power Eagle context
+- `eagleContext.get_selected_folder_ids()` - Get selected folder IDs from Power Eagle context  
+- `eagleContext.get_selected_items(throw=False)` - Get selected items as typed ItemModel objects
+- `eagleContext.get_selected_folders()` - Get selected folders as typed FolderModel objects
 
 ### 📞 Callbacks (Power Eagle Plugins)
 - `EagleCallback` - Callback system for Power Eagle plugin integration (extensive API available)
@@ -152,13 +157,22 @@ from eagle_cooler import EagleWebApi
 folders = EagleWebApi.folder.list()
 
 # Power Eagle mode example (when POWEREAGLE_CONTEXT is available)
-from eagle_cooler import EagleWebApi
+from eagle_cooler import EagleWebApi, eagleContext, EagleCallback
 
-# Enhanced operations available
-# + automatic token management
-# + extended API access
-# + callback system integration
+# Enhanced operations available:
+# 1. Automatic token management
 folders = EagleWebApi.folder.list()
+
+# 2. Access to Power Eagle context with typed models
+selected_items = eagleContext.get_selected_items()  # Returns list[ItemModel]
+selected_folders = eagleContext.get_selected_folders()  # Returns list[FolderModel]
+
+# 3. Callback system for advanced plugin operations
+if selected_items:
+    for item in selected_items:
+        print(f"Selected item: {item['name']} ({item['ext']})")
+        # Use callback system to interact with Power Eagle host
+        # (extensive callback API available - see METHODS_WITH_RETURN_VALUES)
 ```
 
 ## ⚙️ Requirements
