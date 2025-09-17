@@ -1,24 +1,43 @@
-# Eagle Cooler - Python API for Eagle.cool
+# Eagle Cooler 🦅❄️
 
-A Python wrapper for the Eagle.cool HTTP API, designed to work seamlessly with the Power Eagle plugin system.
+[![PyPI version](https://badge.fury.io/py/eagle-cooler.svg)](https://badge.fury.io/py/eagle-cooler)
+[![Python Support](https://img.shields.io/pypi/pyversions/eagle-cooler.svg)](https://pypi.org/project/eagle-cooler/)
+[![License](https://img.shields.io/github/license/ZackaryW/py-eagle-cooler.svg)](LICENSE)
 
-## Features
+A modern Python wrapper for the [Eagle.cool](https://eagle.cool) HTTP API. Works independently with Eagle's web API or seamlessly integrates with the Power Eagle plugin system for enhanced functionality.
 
-- Complete Python implementation of Eagle's HTTP API
-- Automatic token management (works with Power Eagle context)
-- Type hints for better development experience
-- Easy-to-use class-based interface
-- Comprehensive coverage of Eagle's API endpoints
+## ✨ Features
 
-## Installation
+- 🚀 **Complete API Coverage** - Full implementation of Eagle's HTTP API
+- 🔐 **Flexible Authentication** - Works standalone with manual token setup or automatically with Power Eagle
+- 📝 **Type Hints** - Better development experience with full type annotations
+- 🎯 **Easy-to-use Interface** - Clean, class-based API design
+- ⚡ **Modern Python** - Built for Python 3.13+ with modern best practices
+- 🔌 **Plugin Ready** - Enhanced integration with Power Eagle plugin ecosystem
+- 🏠 **Standalone Ready** - Can work independently with just Eagle's web API
+
+## 📦 Installation
+
+Install the latest stable version from PyPI:
 
 ```bash
+# Using uv (recommended)
 uv add eagle-cooler
-# or
+
+# Using pip
 pip install eagle-cooler
+
+# For development
+git clone https://github.com/ZackaryW/py-eagle-cooler.git
+cd py-eagle-cooler
+uv sync --dev
 ```
 
-## Quick Start
+## 🚀 Quick Start
+
+### Standalone Usage (Web API Only)
+
+For basic functionality using Eagle's HTTP API directly:
 
 ```python
 from eagle_cooler import EagleWebApi
@@ -45,57 +64,158 @@ result = EagleWebApi.item.add_from_url(
     name="Example Image",
     tags=["example", "test"]
 )
+
+# Add item from local file
+local_item = EagleWebApi.item.add_from_path(
+    path="/path/to/image.jpg",
+    name="Local Image",
+    tags=["local"]
+)
 ```
 
-## API Documentation
+### Power Eagle Integration (Enhanced Features)
 
-### Application
+When running in a Power Eagle context, access to enhanced features:
+
+```python
+# In a Power Eagle Python script
+from eagle_cooler import EagleCoolerCore, EagleCallback
+
+# Get selected items from Power Eagle context
+selected_items = EagleCoolerCore.selected_item_ids()
+selected_folders = EagleCoolerCore.selected_folder_ids()
+
+# Use callback system for advanced plugin operations
+# (extensive callback API available for plugin development)
+```
+
+## 📚 API Reference
+
+### 🏢 Application
 - `EagleWebApi.application.info()` - Get application information
 
-### Folders
+### 📁 Folders
 - `EagleWebApi.folder.create(name, parent_id=None)` - Create folder
 - `EagleWebApi.folder.rename(folder_id, new_name)` - Rename folder
-- `EagleWebApi.folder.update(folder_id, **kwargs)` - Update folder properties
+- `EagleWebApi.folder.update(folder_id, new_name=None, new_description=None, new_color=None)` - Update folder properties
 - `EagleWebApi.folder.list()` - List all folders
 - `EagleWebApi.folder.list_recent()` - List recent folders
 
-### Library
+### 📚 Library
 - `EagleWebApi.library.info()` - Get library information
 - `EagleWebApi.library.history()` - Get library history
 - `EagleWebApi.library.switch(library_path)` - Switch to different library
 - `EagleWebApi.library.icon(library_path)` - Get library icon
 
-### Items
-- `EagleWebApi.item.list(**filters)` - List items with filters
+### 🖼️ Items
+- `EagleWebApi.item.list(limit=None, offset=None, order_by=None, keyword=None, ext=None, tags=None, folders=None)` - List items with filters
 - `EagleWebApi.item.get_info(item_id)` - Get item details
 - `EagleWebApi.item.get_thumbnail(item_id)` - Get item thumbnail
-- `EagleWebApi.item.update(item_id, **kwargs)` - Update item properties
-- `EagleWebApi.item.add_from_url(url, name, **kwargs)` - Add item from URL
-- `EagleWebApi.item.add_from_path(path, name, **kwargs)` - Add item from file
-- `EagleWebApi.item.add_bookmark(url, name, **kwargs)` - Add bookmark
+- `EagleWebApi.item.update(item_id, tags=None, annotation=None, url=None, star=None)` - Update item properties
+- `EagleWebApi.item.add_from_url(url, name, website=None, tags=None, star=None, annotation=None, modification_time=None, folder_id=None, headers=None)` - Add item from URL
+- `EagleWebApi.item.add_from_path(path, name, website=None, annotation=None, tags=None, folder_id=None)` - Add item from file path
+- `EagleWebApi.item.add_from_urls(items, folder_id=None)` - Add multiple items from URLs
+- `EagleWebApi.item.add_bookmark(url, name, base64=None, tags=None, modification_time=None, folder_id=None)` - Add bookmark
 - `EagleWebApi.item.move_to_trash(item_ids)` - Move items to trash
 - `EagleWebApi.item.refresh_thumbnail(item_id)` - Refresh thumbnail
 - `EagleWebApi.item.refresh_palette(item_id)` - Refresh color palette
 
-## Power Eagle Integration
+### 🔧 Core Utilities (Power Eagle Mode)
+- `EagleCoolerCore.token()` - Get current API token
+- `EagleCoolerCore.selected_item_ids()` - Get selected item IDs from Power Eagle context
+- `EagleCoolerCore.selected_folder_ids()` - Get selected folder IDs from Power Eagle context
 
-This package is designed to work with the Power Eagle plugin system. When running in a Power Eagle context, the API token is automatically obtained from the environment.
+### 📞 Callbacks (Power Eagle Plugins)
+- `EagleCallback` - Callback system for Power Eagle plugin integration (extensive API available)
+
+## 🔌 Usage Modes
+
+Eagle Cooler supports two usage modes:
+
+### 🏠 Standalone Mode (Web API)
+- **Limited Capacity**: Basic API operations through Eagle's HTTP interface
+- **Manual Setup**: Requires Eagle application running with HTTP API enabled
+- **Authentication**: Uses direct API calls (no token management)
+- **Features**: Core operations like listing, creating folders, basic item management
+
+### 🚀 Power Eagle Mode (Enhanced)
+- **Full Capacity**: Complete feature set with enhanced functionality
+- **Automatic Setup**: Token and context management handled automatically
+- **Authentication**: Seamless integration with Power Eagle's security context
+- **Features**: All core operations plus callbacks, advanced file operations, and plugin ecosystem integration
 
 ```python
-# In a Power Eagle Python script
+# Standalone mode example
 from eagle_cooler import EagleWebApi
 
-# Token is automatically available from Power Eagle context
+# Basic operations available
+folders = EagleWebApi.folder.list()
+
+# Power Eagle mode example (when POWEREAGLE_CONTEXT is available)
+from eagle_cooler import EagleWebApi
+
+# Enhanced operations available
+# + automatic token management
+# + extended API access
+# + callback system integration
 folders = EagleWebApi.folder.list()
 ```
 
-## Requirements
+## ⚙️ Requirements
 
-- Python >= 3.13
-- Eagle.cool application running
-- API access enabled in Eagle preferences
-- For Power Eagle: POWEREAGLE_CONTEXT environment variable set
+- **Python**: >= 3.13
+- **Eagle.cool**: Application running with API access enabled
+- **Dependencies**: `requests >= 2.25.0`
+- **For Power Eagle**: `POWEREAGLE_CONTEXT` environment variable set
 
-## License
+### Setup Eagle API Access
+
+1. Open Eagle.cool application
+2. Go to **Preferences** → **Plugin**
+3. Enable **HTTP API**
+4. Note the API port (default: 41595)
+
+## 🤝 Contributing
+
+We welcome contributions! Here's how to get started:
+
+1. **Fork the repository**
+2. **Clone your fork**:
+   ```bash
+   git clone https://github.com/yourusername/py-eagle-cooler.git
+   cd py-eagle-cooler
+   ```
+3. **Install development dependencies**:
+   ```bash
+   uv sync --dev
+   ```
+4. **Make your changes**
+5. **Run tests** (when available):
+   ```bash
+   uv run pytest
+   ```
+6. **Submit a pull request**
+
+### Development Setup
+
+```bash
+# Clone the repository
+git clone https://github.com/ZackaryW/py-eagle-cooler.git
+cd py-eagle-cooler
+
+# Install with development dependencies
+uv sync --dev
+
+# Run the package in development mode
+uv run python -m eagle_cooler
+```
+
+## 📜 License
 
 This project is licensed under the same terms as Power Eagle.
+
+---
+
+<p align="center">
+  <sub>Built with ❤️ for the Eagle.cool community</sub>
+</p>
