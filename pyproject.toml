@@ -1,0 +1,19 @@
+[project]
+name = "eagle-cooler"
+version = "0.1.0"
+description = "Python library for bridging Eagle js environment"
+readme = "README.md"
+authors = [
+    { name = "ZackaryW", email = "gitzackw@gmail.com" }
+]
+requires-python = ">=3.13"
+dependencies = [
+    "requests>=2.25.0"
+]
+
+[project.scripts]
+eagle-cooler = "eagle_cooler:main"
+
+[build-system]
+requires = ["uv_build>=0.8.17,<0.9.0"]
+build-backend = "uv_build"

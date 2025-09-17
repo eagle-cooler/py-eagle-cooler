@@ -1,0 +1,46 @@
+name: Test and Build
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ['3.13']
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v5
+      with:
+        python-version: ${{ matrix.python-version }}
+
+    - name: Install uv
+      uses: astral-sh/setup-uv@v3
+      with:
+        enable-cache: true
+
+    - name: Install dependencies
+      run: uv sync --dev
+
+    - name: Run tests (if any)
+      run: |
+        # Add your test commands here when you have tests
+        # uv run pytest
+        echo "No tests configured yet"
+
+    - name: Test build
+      run: uv build
+
+    - name: Check package
+      run: |
+        # Install twine for package checking
+        uv add --dev twine
+        uv run twine check dist/*
